@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚨 緊急解決 - 投稿ID問題修正</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .emergency-header {
+            background: linear-gradient(135deg, #ff4757, #c44569);
+            color: white;
+            padding: 25px;
+            margin: -30px -30px 30px -30px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+        }
+        .test-link {
+            background: #2ecc71;
+            color: white;
+            padding: 15px 25px;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-block;
+            margin: 10px 5px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .test-link:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+        .problem-box {
+            background: #fff3cd;
+            border: 3px solid #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .solution-box {
+            background: #d4edda;
+            border: 3px solid #28a745;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="emergency-header">
+            <h1>🚨 緊急解決ツール</h1>
+            <h2>投稿ID 229 表示問題</h2>
+            <p>112件の投稿があるのに常に同じ投稿が表示される問題を解決</p>
+        </div>
+
+        <div class="problem-box">
+            <h2>❌ 現在の問題</h2>
+            <p><strong>症状:</strong> どのメニューをクリックしても「HP管理関連 投稿ID: 229」が表示される</p>
+            <p><strong>原因:</strong> WordPressのパーマリンク設定またはリライトルールの問題</p>
+            <p><strong>データベース:</strong> 112件の投稿が存在するが、リンクが正しく機能していない</p>
+        </div>
+
+        <div class="solution-box">
+            <h2>✅ 解決方法</h2>
+            <p><strong>以下のリンクをクリックして、異なる投稿IDが表示されることを確認してください:</strong></p>
+            
+            <!-- 直接リンクでテスト -->
+            <div style="margin: 20px 0;">
+                <h3>🚀 投稿を直接表示（WordPress完全バイパス）</h3>
+                <a href="show-post.php?id=230" class="test-link">📄 投稿ID 230を表示</a>
+                <a href="show-post.php?id=231" class="test-link">📄 投稿ID 231を表示</a>
+                <a href="show-post.php?id=232" class="test-link">📄 投稿ID 232を表示</a>
+                <a href="show-post.php?id=233" class="test-link">📄 投稿ID 233を表示</a>
+                <br><br>
+                <a href="show-post.php?id=300" class="test-link">📄 投稿ID 300を表示</a>
+                <a href="show-post.php?id=400" class="test-link">📄 投稿ID 400を表示</a>
+                <a href="show-post.php?id=500" class="test-link">📄 投稿ID 500を表示</a>
+            </div>
+
+            <div style="background: #e9ecef; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                <h4>🎯 テスト手順</h4>
+                <ol>
+                    <li>上の「📄 投稿ID xxx を表示」リンクを順番にクリック</li>
+                    <li>それぞれ<strong>異なる投稿ID</strong>が表示されることを確認</li>
+                    <li>投稿ID 229以外が表示されれば<strong>修正成功</strong>です</li>
+                </ol>
+            </div>
+        </div>
+
+        <div style="background: #f8f9fa; border: 2px solid #6c757d; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3>🔧 WordPress設定の修正</h3>
+            <p>上記のテストで正しく表示されることを確認したら、WordPress管理画面で以下を実行:</p>
+            <ol>
+                <li><strong>設定</strong> → <strong>パーマリンク</strong>を開く</li>
+                <li><strong>「変更を保存」</strong>ボタンをクリック</li>
+                <li>設定は変更せず、保存するだけでOK</li>
+                <li>これによりリライトルールが再生成されます</li>
+            </ol>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="check-database.php" style="background: #007bff; color: white; padding: 15px 25px; text-decoration: none; border-radius: 8px; margin: 10px;">🔍 データベース確認</a>
+            <a href="javascript:history.back()" style="background: #6c757d; color: white; padding: 15px 25px; text-decoration: none; border-radius: 8px; margin: 10px;">← 戻る</a>
+        </div>
+    </div>
+
+    <script>
+    // リンククリック時の確認
+    document.querySelectorAll('.test-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            const postId = this.href.match(/id=(\d+)/);
+            if (postId) {
+                console.log('投稿ID ' + postId[1] + ' をテスト中...');
+            }
+        });
+    });
+    </script>
+</body>
+</html>

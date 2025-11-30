@@ -1,0 +1,137 @@
+<?php
+/**
+ * 緊急投稿作成ツール
+ * URL: create-emergency-posts.php
+ */
+
+// WordPressを読み込み
+$wp_config_path = '../../../wp-config.php';
+if (file_exists($wp_config_path)) {
+    require_once($wp_config_path);
+}
+
+$message = '';
+$success = false;
+
+// 投稿作成処理
+if (isset($_POST['create_posts'])) {
+    global $wpdb;
+    
+    $created_posts = [];
+    
+    // 3つの緊急テスト投稿を作成
+    for ($i = 1; $i <= 3; $i++) {
+        $post_data = array(
+            'post_title' => "緊急テスト投稿 #$i",
+            'post_content' => "<h2>🎉 成功！緊急テスト投稿 #$i が正しく表示されています</h2>
+                              <p><strong>投稿番号:</strong> #$i</p>
+                              <p><strong>作成日時:</strong> " . date('Y年m月d日 H:i:s') . "</p>
+                              <p><strong>目的:</strong> 投稿ID 229固定問題の解決確認</p>
+                              <div style='background: #d4edda; padding: 15px; border-radius: 8px; margin: 20px 0;'>
+                                  <h3 style='color: #155724; margin-top: 0;'>✅ この投稿が表示されていれば問題解決成功です！</h3>
+                                  <p style='margin-bottom: 0;'>WordPressの投稿表示システムが正常に動作しています。</p>
+                              </div>",
+            'post_status' => 'publish',
+            'post_author' => 1,
+            'post_date' => current_time('mysql'),
+            'post_type' => 'post',
+            'menu_order' => 0
+        );
+        
+        // データベースに直接挿入
+        $result = $wpdb->insert($wpdb->posts, $post_data);
+        
+        if ($result) {
+            $new_post_id = $wpdb->insert_id;
+            
+            // カスタムフィールドも追加
+            $wpdb->insert($wpdb->postmeta, array(
+                'post_id' => $new_post_id,
+                'meta_key' => 'menu_no',
+                'meta_value' => "TEST-$i-00-00"
+            ));
+            
+            $created_posts[] = array(
+                'id' => $new_post_id,
+                'title' => "緊急テスト投稿 #$i"
+            );
+        }
+    }
+    
+    if (!empty($created_posts)) {
+        $success = true;
+        $message = "✅ " . count($created_posts) . "件の緊急テスト投稿を作成しました！";
+    } else {
+        $message = "❌ 投稿の作成に失敗しました。";
+    }
+}
+
+?>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚨 緊急投稿作成ツール</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; min-height: 100vh; }
+        .container { max-width: 800px; margin: 0 auto; background: rgba(0,0,0,0.8); padding: 40px; border-radius: 15px; }
+        .emergency { background: #dc3545; padding: 25px; border-radius: 10px; text-align: center; margin: 20px 0; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .create-button { background: #28a745; color: white; padding: 20px 40px; border: none; border-radius: 10px; font-size: 1.3em; font-weight: bold; cursor: pointer; margin: 20px 10px; }
+        .create-button:hover { background: #218838; transform: translateY(-2px); }
+        .test-link { background: #007bff; color: white; padding: 12px 20px; text-decoration: none; border-radius: 6px; margin: 8px; font-weight: bold; display: inline-block; }
+        .success-box { background: #28a745; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .error-box { background: #dc3545; padding: 20px; border-radius: 10px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="emergency">
+            <h1 style="margin: 0; font-size: 2.5em;">🚨 緊急投稿作成ツール</h1>
+            <p style="margin: 10px 0; font-size: 1.2em;">投稿ID 229固定問題解決のため</p>
+        </div>
+
+        <?php if ($message): ?>
+            <div class="<?php echo $success ? 'success-box' : 'error-box'; ?>">
+                <h2><?php echo htmlspecialchars($message); ?></h2>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($success && !empty($created_posts)): ?>
+            <div class="success-box">
+                <h2>🎯 作成された投稿でテスト</h2>
+                <p>以下のリンクをクリックして、投稿ID 229以外が表示されるかテストしてください：</p>
+                
+                <?php foreach ($created_posts as $post): ?>
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin: 10px 0;">
+                    <h3><?php echo htmlspecialchars($post['title']); ?> (ID: <?php echo $post['id']; ?>)</h3>
+                    <div>
+                        <a href="?p=<?php echo $post['id']; ?>" class="test-link">?p=<?php echo $post['id']; ?></a>
+                        <a href="?page_id=<?php echo $post['id']; ?>" class="test-link">?page_id=<?php echo $post['id']; ?></a>
+                        <a href="show-post.php?id=<?php echo $post['id']; ?>" target="_blank" class="test-link">専用システム</a>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        <?php else: ?>
+            <div style="background: rgba(255,255,255,0.1); padding: 30px; border-radius: 10px; text-align: center;">
+                <h2>📝 緊急テスト投稿を作成</h2>
+                <p style="font-size: 1.1em;">投稿ID 229問題を解決するため、新しいテスト投稿を3件作成します。</p>
+                
+                <form method="post" style="margin: 30px 0;">
+                    <button type="submit" name="create_posts" class="create-button">
+                        🚀 緊急テスト投稿を作成する
+                    </button>
+                </form>
+                
+                <p style="font-size: 0.9em; color: #ccc;">※ 作成後、各投稿のリンクをテストして問題が解決されたか確認できます</p>
+            </div>
+        <?php endif; ?>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="javascript:history.back()" style="background: #6c757d; color: white; padding: 15px 25px; text-decoration: none; border-radius: 8px;">← 戻る</a>
+        </div>
+    </div>
+</body>
+</html>

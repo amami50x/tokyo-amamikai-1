@@ -1,0 +1,92 @@
+<?php
+/**
+ * 投稿ID確認ツール
+ * URL: check-post-ids.php
+ */
+
+// WordPressを読み込み
+$wp_config_path = '../../../wp-config.php';
+if (file_exists($wp_config_path)) {
+    require_once($wp_config_path);
+}
+
+global $wpdb;
+
+// 全投稿IDを取得
+$all_posts = $wpdb->get_results(
+    "SELECT ID, post_title, post_type, post_status, post_date 
+     FROM {$wpdb->posts} 
+     WHERE post_status = 'publish' 
+     AND post_type = 'post' 
+     ORDER BY ID ASC"
+);
+
+?>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 投稿ID確認ツール</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f0f8ff; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
+        .header { background: #007cba; color: white; padding: 20px; margin: -30px -30px 30px -30px; border-radius: 10px 10px 0 0; text-align: center; }
+        .post-item { background: #f8f9fa; border: 2px solid #dee2e6; padding: 15px; margin: 10px 0; border-radius: 8px; }
+        .test-link { background: #28a745; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; margin: 5px; font-weight: bold; }
+        .test-link:hover { background: #218838; }
+        .current-problem { background: #ffcccc; border: 3px solid #ff0000; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 投稿ID確認ツール</h1>
+            <p>WordPressデータベース内の全投稿IDを表示します</p>
+        </div>
+
+        <div style="background: #fff3cd; border: 2px solid #ffc107; padding: 20px; margin: 20px 0; border-radius: 8px;">
+            <h2 style="color: #856404;">📊 発見された投稿数: <?php echo count($all_posts); ?>件</h2>
+        </div>
+
+        <?php if (empty($all_posts)): ?>
+            <div style="background: #f8d7da; border: 2px solid #dc3545; padding: 20px; border-radius: 8px;">
+                <h2>❌ 投稿が見つかりません</h2>
+                <p>データベースに公開済みの投稿が存在しません。</p>
+            </div>
+        <?php else: ?>
+            <?php foreach ($all_posts as $post): ?>
+            <div class="post-item <?php if($post->ID == 229) echo 'current-problem'; ?>">
+                <h3>
+                    投稿ID: <?php echo $post->ID; ?> 
+                    <?php if($post->ID == 229): ?>
+                        <span style="color: #dc3545; font-weight: bold;">← 問題の投稿</span>
+                    <?php endif; ?>
+                </h3>
+                <p><strong>タイトル:</strong> <?php echo htmlspecialchars($post->post_title); ?></p>
+                <p><strong>投稿日:</strong> <?php echo $post->post_date; ?></p>
+                
+                <div style="margin: 10px 0;">
+                    <a href="?p=<?php echo $post->ID; ?>" class="test-link">?p=<?php echo $post->ID; ?></a>
+                    <a href="?page_id=<?php echo $post->ID; ?>" class="test-link">?page_id=<?php echo $post->ID; ?></a>
+                    <a href="show-post.php?id=<?php echo $post->ID; ?>" target="_blank" class="test-link">専用システム</a>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+
+        <div style="background: #d1ecf1; border: 2px solid #17a2b8; padding: 20px; margin: 20px 0; border-radius: 8px;">
+            <h2>🧪 テスト手順</h2>
+            <ol>
+                <li><strong>投稿ID 229以外</strong>の投稿の<strong>「?p=XXX」</strong>リンクをクリック</li>
+                <li><strong>投稿ID 229以外</strong>が表示されれば成功</li>
+                <li><strong>「専用システム」</strong>リンクは新しいウィンドウで開きます</li>
+            </ol>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="javascript:history.back()" style="background: #6c757d; color: white; padding: 15px 25px; text-decoration: none; border-radius: 8px;">← 戻る</a>
+        </div>
+    </div>
+</body>
+</html>

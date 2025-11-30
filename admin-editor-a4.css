@@ -1,0 +1,113 @@
+/* 管理画面A4エディター用A4幅・縦フリー・全行表示・背景色・フォント統一 */
+.tokyo-menu-a4-content {
+    width: 100%;
+    max-width: 210mm;
+    min-height: 0;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    background: #f8fafc;
+    border: 1px solid #b6d6f6;
+    border-radius: 8px;
+    box-sizing: border-box;
+    padding: 32px 32px 56px 32px;
+    font-size: 16px;
+    line-height: 1.5;
+    font-weight: 600;
+    color: #222;
+    font-family: Yu Gothic, Hiragino Kaku Gothic ProN, Meiryo, sans-serif;
+    overflow: visible;
+}
+/* --- A4エリア本体・WordPress標準エディタ両対応 --- */
+.tokyo-menu-a4-content,
+.edit-post-visual-editor__content-area,
+.block-editor-writing-flow,
+#postdivrich,
+.wp-block,
+.wp-block-post-content {
+    width: 100% !important;
+    max-width: 230mm !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    background: #f8fafc !important;
+    border: 1px solid #b6d6f6 !important;
+    border-radius: 8px !important;
+    box-sizing: border-box !important;
+    padding: 32px 32px 56px 32px !important;
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+    font-weight: 600 !important;
+    color: #222 !important;
+    font-family: Yu Gothic, Hiragino Kaku Gothic ProN, Meiryo, sans-serif !important;
+    overflow: visible !important;
+}
+
+/* --- A4エリア内要素の装飾 --- */
+.tokyo-menu-a4-content p,
+.tokyo-menu-a4-content ul,
+.tokyo-menu-a4-content ol,
+.tokyo-menu-a4-content pre,
+.tokyo-menu-a4-content blockquote,
+.tokyo-menu-a4-content table {
+    background: #e3f0ff;
+    border-radius: 8px;
+    padding: 6px 12px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+.tokyo-menu-a4-content p {
+    margin-top: 0;
+    margin-bottom: 10px;
+    position: relative;
+}
+.tokyo-menu-a4-content p.pen-icon::before {
+    content: "\f304 ";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    color: #2196f3;
+    margin-right: 8px;
+    font-size: 1em;
+    position: relative;
+    top: 0.5px;
+}
+.tokyo-menu-a4-content p.calendar-icon::before {
+    content: "\f133 ";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    color: #2196f3;
+    margin-right: 8px;
+    font-size: 1em;
+    position: relative;
+    top: 0.5px;
+}
+/* Gutenbergエディタの余白や背景をリセット */
+.edit-post-layout__content,
+.interface-interface-skeleton__content,
+.edit-post-visual-editor {
+    background: transparent !important;
+    padding: 0 !important;
+}
+/* クラシックエディタ用 */
+#poststuff #post-body-content {
+    max-width: 230mm !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    background: #f8fafc !important;
+    border-radius: 8px !important;
+    box-sizing: border-box !important;
+    padding: 32px 32px 56px 32px !important;
+}
+.tokyo-menu-a4-content p.calendar-icon::before {
+    content: "\f133 ";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    color: #2196f3;
+    margin-right: 8px;
+    font-size: 1em;
+    position: relative;
+    top: 0.5px;
+}

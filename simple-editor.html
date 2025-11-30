@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【完全版】Google Docs風リッチエディター</title>
+    <!-- 🔍 FILE IDENTIFIER: SIMPLE-EDITOR.HTML 🔍 -->
+    <!-- このコメントが見えたら simple-editor.html が読み込まれています -->
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: #1976d2;
+            color: white;
+            padding: 10px 15px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .header p {
+            margin: 2px 0 0 0 !important;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 15px;
+        }
+        .main-editor {
+            width: 100%;
+        }
+        
+        /* 高機能ツールバー（Google Docs風・コンパクト版） */
+        .rich-toolbar {
+            border: 1px solid #c3c4c7 !important;
+            border-bottom: none !important;
+            padding: 4px !important;
+            background: #ffffff !important;
+            border-radius: 4px 4px 0 0 !important;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+        }
+        .toolbar-row {
+            display: flex !important;
+            align-items: center !important;
+            margin-bottom: 2px !important;
+            flex-wrap: wrap !important;
+            gap: 1px !important;
+            border-bottom: 1px solid #eee !important;
+            padding-bottom: 2px !important;
+        }
+        .toolbar-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .toolbar-btn {
+            padding: 2px 4px !important;
+            border: 1px solid #ddd !important;
+            background: #f9f9f9 !important;
+            border-radius: 2px !important;
+            cursor: pointer !important;
+            font-size: 9px !important;
+            line-height: 1 !important;
+            min-width: 18px !important;
+            height: 18px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transition: all 0.1s ease !important;
+        }
+        .toolbar-btn:hover {
+            background: #e0e0e0;
+            border-color: #bbb;
+        }
+        .toolbar-btn.active {
+            background: #1976d2;
+            color: white;
+            border-color: #1565c0;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+        }
+        .toolbar-select {
+            padding: 1px 2px !important;
+            border: 1px solid #ddd !important;
+            border-radius: 2px !important;
+            font-size: 9px !important;
+            background: white !important;
+            min-width: 50px !important;
+            height: 18px !important;
+        }
+        .toolbar-select:focus {
+            border-color: #1976d2;
+            outline: none;
+            box-shadow: 0 0 2px rgba(25,118,210,0.3);
+        }
+        .toolbar-separator {
+            width: 1px;
+            height: 14px;
+            background: #ddd;
+            margin: 0 1px;
+        }
+        .color-picker-group {
+            position: relative;
+            display: inline-block;
+        }
+        .color-btn {
+            position: relative;
+            overflow: visible;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background: var(--current-color, #000000);
+            color: white;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.7);
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 9px;
+            border-radius: 2px;
+        }
+        .color-btn:hover {
+            border-color: #999;
+            transform: scale(1.05);
+        }
+        .color-btn[data-type="text"] {
+            background: linear-gradient(to bottom, var(--current-color, #000000) 70%, #ffffff 70%);
+        }
+        .color-btn[data-type="background"] {
+            background: var(--current-color, #ffff00);
+            color: #000;
+            text-shadow: 1px 1px 1px rgba(255,255,255,0.7);
+        }
+        .color-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .toolbar-input {
+            border: 1px solid #ddd;
+            border-radius: 2px;
+            padding: 1px 3px;
+            font-size: 9px;
+            width: 60px;
+            height: 16px;
+        }
+        .toolbar-input:focus {
+            border-color: #1976d2;
+            outline: none;
+            box-shadow: 0 0 2px rgba(25,118,210,0.3);
+        }
+        .search-group {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 2px;
+            padding: 1px;
+            display: flex;
+            align-items: center;
+            gap: 1px;
+        }
+        
+        .editor-area {
+            min-height: 500px;
+            max-height: 700px;
+            overflow-y: auto;
+            border: 2px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            padding: 12px;
+            font-size: 16px;
+            line-height: 1.6;
+            font-family: 'Yu Gothic', 'Hiragino Sans', sans-serif;
+            background: white;
+        }
+        .editor-area:focus {
+            border-color: #1976d2;
+            outline: none;
+            box-shadow: 0 0 5px rgba(25,118,210,0.3);
+        }
+        .editor-area h1, .editor-area h2, .editor-area h3, 
+        .editor-area h4, .editor-area h5, .editor-area h6 {
+            margin: 1em 0 0.5em 0;
+            font-weight: bold;
+        }
+        .editor-area h1 { font-size: 2em; }
+        .editor-area h2 { font-size: 1.5em; }
+        .editor-area h3 { font-size: 1.3em; }
+        .editor-area h4 { font-size: 1.1em; }
+        .editor-area h5 { font-size: 1em; }
+        .editor-area h6 { font-size: 0.9em; }
+        .editor-area blockquote {
+            margin: 1em 0;
+            padding: 10px 20px;
+            border-left: 4px solid #1976d2;
+            background: #f9f9f9;
+            font-style: italic;
+        }
+        .editor-area pre {
+            background: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 10px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+        }
+        .editor-area table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1em 0;
+        }
+        .editor-area table td, .editor-area table th {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .editor-area table th {
+            background: #f2f2f2;
+            font-weight: bold;
+        }
+        .editor-area ul, .editor-area ol {
+            margin: 1em 0;
+            padding-left: 40px;
+        }
+        .editor-area li {
+            margin: 0.5em 0;
+        }
+        
+        /* 検索ハイライト */
+        .search-highlight {
+            background-color: #ffff99;
+            padding: 1px 2px;
+            border-radius: 2px;
+        }
+        .search-highlight.search-active {
+            background-color: #ff9999;
+            font-weight: bold;
+            animation: pulse 1s ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .buttons {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        .save-section {
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #e9ecef;
+            margin-top: 8px;
+        }
+        .save-section h3 {
+            font-size: 12px;
+            margin: 0 0 8px 0;
+            color: #495057;
+        }
+        
+        /* レスポンシブデザイン */
+        @media (max-width: 768px) {
+            .editor-area {
+                min-height: 300px;
+            }
+            .toolbar-row {
+                gap: 0;
+            }
+            .toolbar-btn {
+                min-width: 16px !important;
+                width: 16px !important;
+                height: 16px !important;
+                font-size: 8px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        alert('🔥 緊急確認: SIMPLE-EDITOR.HTML が実行されました！');
+        console.log('現在のファイル: simple-editor.html');
+        document.title = '🔥【確認用】SIMPLE-EDITOR.HTML実行中';
+    </script>
+    <!-- 🚨 ファイル確認バナー 🚨 -->
+    <div style="position: fixed; top: 0; left: 0; width: 100%; background: red; color: white; text-align: center; padding: 15px; font-size: 24px; font-weight: bold; z-index: 9999; border-bottom: 5px solid yellow;">
+        🚨 SIMPLE-EDITOR.HTML 実行中 🚨 | ファイル: simple-editor.html | 時刻: 14:50
+    </div>
+    <div style="margin-top: 80px;"></div>
+    
+    <div class="container">
+        <div class="header" style="background: #d32f2f !important;">
+            <h1>� Google Docs風高機能エディター【最新版・確認用】</h1>
+            <p>完全版・コンパクトUI・全機能搭載 - 2025/11/4 14:30 最終更新 🔥</p>
+            <p style="background: yellow; color: black; padding: 5px; margin: 5px 0;">⚠️ この赤いヘッダーが見えていれば最新版が読み込まれています ⚠️</p>
+        </div>
+        
+        <div class="content">
+
+            
+            <!-- メインエディター -->
+                <div class="form-group">
+                    <label for="editor" style="font-size: 12px; margin-bottom: 2px;">📝 投稿内容（メイン編集エリア）</label>
+                
+                <!-- 高機能ツールバー（Google Docs風・4行構成） -->
+                <div id="rich-editor-toolbar" class="rich-toolbar">
+                    
+                    <!-- 第1行：基本ツール -->
+                    <div class="toolbar-row">
+                        <!-- 元に戻す・やり直し -->
+                        <button type="button" id="undo" class="toolbar-btn" title="元に戻す (Ctrl+Z)">↶</button>
+                        <button type="button" id="redo" class="toolbar-btn" title="やり直し (Ctrl+Y)">↷</button>
+                        <div class="toolbar-separator"></div>
+                        
+                        <!-- 検索・置換 -->
+                        <div class="search-group">
+                            <input type="text" id="searchInput" placeholder="検索..." class="toolbar-input">
+                            <button type="button" id="findNext" class="toolbar-btn" title="次を検索 (F3)">🔍</button>
+                            <button type="button" id="replace" class="toolbar-btn" title="置換">🔄</button>
+                        </div>
+                        <div class="toolbar-separator"></div>
+                        
+                        <!-- ズーム -->
+                        <select id="zoomLevel" class="toolbar-select" title="ズーム">
+                            <option value="0.75">75%</option>
+                            <option value="1.0" selected>100%</option>
+                            <option value="1.25">125%</option>
+                            <option value="1.5">150%</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 第2行：書式設定 -->
+                    <div class="toolbar-row">
+                        <!-- フォント選択 -->
+                        <select id="fontFamily" class="toolbar-select" title="フォント">
+                            <option value="Arial, sans-serif">Arial</option>
+                            <option value="'Times New Roman', serif">Times New Roman</option>
+                            <option value="'Yu Gothic', 'Hiragino Sans', sans-serif" selected>游ゴシック</option>
+                            <option value="'MS PGothic', sans-serif">MS Pゴシック</option>
+                            <option value="'MS PMincho', serif">MS P明朝</option>
+                            <option value="'Meiryo', sans-serif">メイリオ</option>
+                        </select>
+                        
+                        <!-- フォントサイズ -->
+                        <select id="fontSize" class="toolbar-select" title="フォントサイズ">
+                            <option value="8px">8</option>
+                            <option value="9px">9</option>
+                            <option value="10px">10</option>
+                            <option value="11px">11</option>
+                            <option value="12px">12</option>
+                            <option value="14px">14</option>
+                            <option value="16px" selected>16</option>
+                            <option value="18px">18</option>
+                            <option value="20px">20</option>
+                            <option value="24px">24</option>
+                            <option value="28px">28</option>
+                            <option value="32px">32</option>
+                            <option value="36px">36</option>
+                            <option value="48px">48</option>
+                        </select>
+                        
+                        <div class="toolbar-separator"></div>
+                        
+                        <!-- 基本書式 -->
+                        <button type="button" id="bold" class="toolbar-btn" title="太字 (Ctrl+B)"><strong>B</strong></button>
+                        <button type="button" id="italic" class="toolbar-btn" title="斜体 (Ctrl+I)"><em>I</em></button>
+                        <button type="button" id="underline" class="toolbar-btn" title="下線 (Ctrl+U)"><u>U</u></button>
+                        
+                        <div class="toolbar-separator"></div>
+                        
+                        <!-- 文字・背景色 -->
+                        <div class="color-picker-group">
+                            <label for="textColor" class="color-btn" data-type="text" title="文字色">A</label>
+                            <input type="color" id="textColor" value="#000000" class="color-input">
+                        </div>
+                        <div class="color-picker-group">
+                            <label for="backgroundColor" class="color-btn" data-type="background" title="背景色">A</label>
+                            <input type="color" id="backgroundColor" value="#ffff00" class="color-input">
+                        </div>
+                    </div>
+                    
+                    <!-- 第3行：段落・配置 -->
+                    <div class="toolbar-row">
+                        <!-- 段落スタイル -->
+                        <select id="formatBlock" class="toolbar-select" title="段落スタイル">
+                            <option value="p">標準テキスト</option>
+                            <option value="h1">見出し1</option>
+                            <option value="h2">見出し2</option>
+                            <option value="h3">見出し3</option>
+                            <option value="h4">見出し4</option>
+                            <option value="h5">見出し5</option>
+                            <option value="h6">見出し6</option>
+                            <option value="blockquote">引用</option>
+                            <option value="pre">整形済み</option>
+                        </select>
+                        
+                        <div class="toolbar-separator"></div>
+                        
+                        <!-- 配置 -->
+                        <button type="button" id="justifyLeft" class="toolbar-btn active" title="左揃え">⬅</button>
+                        <button type="button" id="justifyCenter" class="toolbar-btn" title="中央揃え">🎯</button>
+                        <button type="button" id="justifyRight" class="toolbar-btn" title="右揃え">➡</button>
+                        <button type="button" id="justifyFull" class="toolbar-btn" title="両端揃え">⬌</button>
+                        
+                        <div class="toolbar-separator"></div>
+                        
+                        <!-- リスト -->
+                        <button type="button" id="insertOrderedList" class="toolbar-btn" title="番号付きリスト">1.</button>
+                        <button type="button" id="insertUnorderedList" class="toolbar-btn" title="箇条書きリスト">•</button>
+                        <button type="button" id="indent" class="toolbar-btn" title="インデント増加">⟶</button>
+                        <button type="button" id="outdent" class="toolbar-btn" title="インデント減少">⟵</button>
+                        
+                        <div class="toolbar-separator"></div>
+                        
+                        <!-- 行間 -->
+                        <select id="lineHeight" class="toolbar-select" title="行間">
+                            <option value="1.0">1.0</option>
+                            <option value="1.15">1.15</option>
+                            <option value="1.5" selected>1.5</option>
+                            <option value="2.0">2.0</option>
+                            <option value="2.5">2.5</option>
+                            <option value="3.0">3.0</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 第4行：挿入・特殊機能 -->
+                    <div class="toolbar-row">
+                        <!-- リンク -->
+                        <button type="button" id="createLink" class="toolbar-btn" title="リンクを挿入">🔗</button>
+                        <button type="button" id="unlink" class="toolbar-btn" title="リンクを削除">🔗⃠</button>
+                        
+                        <div class="toolbar-separator"></div>
+                        
+                        <!-- 挿入 -->
+                        <button type="button" id="insertImage" class="toolbar-btn" title="画像を挿入">🖼️</button>
+                        <button type="button" id="insertTable" class="toolbar-btn" title="表を挿入">📊</button>
+                        <button type="button" id="insertHorizontalRule" class="toolbar-btn" title="水平線を挿入">—</button>
+                        
+                        <div class="toolbar-separator"></div>
+                        
+                        <!-- 書式をクリア -->
+                        <button type="button" id="removeFormat" class="toolbar-btn" title="書式をクリア">T✕</button>
+                        
+                        <div class="toolbar-separator"></div>
+                        
+                        <!-- HTMLソース表示 -->
+                        <button type="button" id="viewSource" class="toolbar-btn" title="HTMLソースを表示/編集">< ></button>
+                    </div>
+                </div>
+                
+                <div id="editor" 
+                     contenteditable="true" 
+                     class="editor-area">ここに文章を入力してください。Google Docs風の高機能ツールバーをお試しください！</div>
+                
+                <div class="buttons">
+                    <button id="saveBtn" class="btn btn-primary">💾 内容を保存</button>
+                    <button id="loadBtn" class="btn btn-secondary">📂 読み込み</button>
+                    <button id="copyBtn" class="btn btn-secondary">📋 HTMLコピー</button>
+                    <button id="clearAllBtn" class="btn btn-secondary">🗑️ 全てクリア</button>
+                </div>
+            </div>
+            
+            <!-- 保存セクション（下部配置） -->
+            <div class="save-section">
+                <h3>📋 プレビュー・保存機能</h3>
+                <div id="preview" style="min-height: 80px; border: 1px solid #ddd; padding: 10px; background: white; border-radius: 4px; font-size: 12px;">
+                    プレビューがここに表示されます
+                </div>
+            </div>
+            
+            <!-- 投稿詳細設定（下部に移動） -->
+            <div class="save-section" style="margin-top: 15px;">
+                <h3>📋 投稿詳細設定</h3>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div>
+                        <label for="post_title_bottom" style="display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px;">タイトル</label>
+                        <input type="text" id="post_title_bottom" placeholder="投稿のタイトルを入力..." style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+                    </div>
+                    <div>
+                        <label for="menu_number_bottom" style="display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px;">MENU番号</label>
+                        <input type="text" id="menu_number_bottom" placeholder="MENU番号が表示されます" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; background: #f8f9fa;" readonly>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label for="end_date_bottom" style="display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px;">掲載最終日</label>
+                        <input type="date" id="end_date_bottom" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+                        <small style="color: #666; font-size: 11px; margin-top: 3px; display: block;">掲載を終了する日付を設定できます</small>
+                    </div>
+                    <div>
+                        <label for="editor_name_bottom" style="display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px;">編集者</label>
+                        <select id="editor_name_bottom" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+                            <option value="管理者" selected>管理者</option>
+                            <option value="副管理者">副管理者</option>
+                            <option value="編集者">編集者</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // エディターの初期化
+        const editor = document.getElementById('editor');
+        const preview = document.getElementById('preview');
+        
+        // 検索機能の変数（グローバルスコープ）
+        let currentSearchTerm = '';
+        let searchResults = [];
+        let currentSearchIndex = -1;
+        
+        // DOMが完全に読み込まれてから初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 強制的にスタイルを適用
+            forceCompactStyles();
+            // 高機能リッチエディタの初期化
+            initRichEditor();
+            // プレビュー更新
+            updatePreview();
+        });
+        
+        // 強制的にコンパクトスタイルを適用
+        function forceCompactStyles() {
+            // ツールバーボタンのスタイルを強制適用
+            const toolbarButtons = document.querySelectorAll('.toolbar-btn');
+            toolbarButtons.forEach(btn => {
+                btn.style.width = '18px';
+                btn.style.height = '18px';
+                btn.style.fontSize = '9px';
+                btn.style.padding = '2px 4px';
+                btn.style.minWidth = '18px';
+            });
+            
+            // セレクトボックスのスタイルを強制適用
+            const toolbarSelects = document.querySelectorAll('.toolbar-select');
+            toolbarSelects.forEach(select => {
+                select.style.height = '18px';
+                select.style.fontSize = '9px';
+                select.style.minWidth = '50px';
+                select.style.padding = '1px 2px';
+            });
+            
+            // ツールバー全体のスタイル強制適用
+            const toolbar = document.querySelector('.rich-toolbar');
+            if (toolbar) {
+                toolbar.style.padding = '4px';
+            }
+            
+            const toolbarRows = document.querySelectorAll('.toolbar-row');
+            toolbarRows.forEach(row => {
+                row.style.marginBottom = '2px';
+                row.style.gap = '1px';
+                row.style.paddingBottom = '2px';
+            });
+        }
+        
+        function initRichEditor() {
+            if (!editor) return;
+            
+            // 初期化：色ボタンの表示を設定
+            const textColorInput = document.getElementById('textColor');
+            const textColorBtn = document.querySelector('label[for="textColor"]');
+            if (textColorInput && textColorBtn) {
+                updateColorButton(textColorBtn, textColorInput.value, 'text');
+            }
+            
+            const bgColorInput = document.getElementById('backgroundColor');
+            const bgColorBtn = document.querySelector('label[for="backgroundColor"]');
+            if (bgColorInput && bgColorBtn) {
+                updateColorButton(bgColorBtn, bgColorInput.value, 'background');
+            }
+            
+            // エディター内容変更時にプレビュー更新
+            editor.addEventListener('input', updatePreview);
+            
+            // Google Docs風ツールバーの機能を追加
+            setupToolbarEvents();
+            
+            // 1秒後に再度スタイルを強制適用（他のスクリプトによる干渉対策）
+            setTimeout(forceCompactStyles, 1000);
+        }
+        
+        function setupToolbarEvents() {
+            // 元に戻す・やり直し
+            document.getElementById('undo')?.addEventListener('click', () => {
+                document.execCommand('undo', false, null);
+            });
+            document.getElementById('redo')?.addEventListener('click', () => {
+                document.execCommand('redo', false, null);
+            });
+            
+            // 検索機能
+            document.getElementById('searchInput')?.addEventListener('input', function() {
+                currentSearchTerm = this.value;
+                if (currentSearchTerm.length > 0) {
+                    performSearch();
+                } else {
+                    clearSearchHighlights();
+                }
+            });
+            
+            document.getElementById('findNext')?.addEventListener('click', () => {
+                if (currentSearchTerm) {
+                    findNext();
+                }
+            });
+            
+            document.getElementById('replace')?.addEventListener('click', () => {
+                if (currentSearchTerm) {
+                    performReplace();
+                }
+            });
+            
+            // ズーム
+            document.getElementById('zoomLevel')?.addEventListener('change', function() {
+                editor.style.zoom = this.value;
+            });
+            
+            // フォント選択
+            document.getElementById('fontFamily')?.addEventListener('change', function() {
+                editor.focus();
+                document.execCommand('fontName', false, this.value);
+            });
+            
+            // フォントサイズ
+            document.getElementById('fontSize')?.addEventListener('change', function() {
+                const fontSize = this.value;
+                const selection = window.getSelection();
+                
+                if (selection.rangeCount > 0 && !selection.isCollapsed) {
+                    const range = selection.getRangeAt(0);
+                    const contents = range.extractContents();
+                    const span = document.createElement('span');
+                    span.style.fontSize = fontSize;
+                    span.appendChild(contents);
+                    range.insertNode(span);
+                    
+                    range.selectNodeContents(span);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                } else {
+                    document.execCommand('fontSize', false, '7');
+                    setTimeout(() => {
+                        const fontElements = document.querySelectorAll('font[size="7"]');
+                        fontElements.forEach(function(element) {
+                            element.removeAttribute('size');
+                            element.style.fontSize = fontSize;
+                        });
+                    }, 10);
+                }
+                updatePreview();
+            });
+            
+            // 基本書式
+            document.getElementById('bold')?.addEventListener('click', () => {
+                editor.focus();
+                document.execCommand('bold', false, null);
+                updateButtonState('bold');
+                updatePreview();
+            });
+            document.getElementById('italic')?.addEventListener('click', () => {
+                editor.focus();
+                document.execCommand('italic', false, null);
+                updateButtonState('italic');
+                updatePreview();
+            });
+            document.getElementById('underline')?.addEventListener('click', () => {
+                editor.focus();
+                document.execCommand('underline', false, null);
+                updateButtonState('underline');
+                updatePreview();
+            });
+            
+            // 色選択
+            document.getElementById('textColor')?.addEventListener('change', function() {
+                const color = this.value;
+                editor.focus();
+                
+                const textColorBtn = document.querySelector('label[for="textColor"]');
+                if (textColorBtn) {
+                    updateColorButton(textColorBtn, color, 'text');
+                }
+                
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0 && !selection.isCollapsed) {
+                    document.execCommand('styleWithCSS', false, true);
+                    document.execCommand('foreColor', false, color);
+                    document.execCommand('styleWithCSS', false, false);
+                }
+                updatePreview();
+            });
+            
+            document.getElementById('backgroundColor')?.addEventListener('change', function() {
+                const color = this.value;
+                editor.focus();
+                
+                const bgColorBtn = document.querySelector('label[for="backgroundColor"]');
+                if (bgColorBtn) {
+                    updateColorButton(bgColorBtn, color, 'background');
+                }
+                
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0 && !selection.isCollapsed) {
+                    document.execCommand('styleWithCSS', false, true);
+                    document.execCommand('hiliteColor', false, color);
+                    document.execCommand('styleWithCSS', false, false);
+                }
+                updatePreview();
+            });
+            
+            // 段落スタイル
+            document.getElementById('formatBlock')?.addEventListener('change', function() {
+                const tagName = this.value;
+                editor.focus();
+                if (tagName === 'p') {
+                    document.execCommand('formatBlock', false, 'p');
+                } else {
+                    document.execCommand('formatBlock', false, tagName);
+                }
+                this.blur();
+                updatePreview();
+            });
+            
+            // 配置
+            document.getElementById('justifyLeft')?.addEventListener('click', () => {
+                editor.focus();
+                document.execCommand('styleWithCSS', false, true);
+                document.execCommand('justifyLeft', false, null);
+                updateAlignButtons('justifyLeft');
+                updatePreview();
+            });
+            document.getElementById('justifyCenter')?.addEventListener('click', () => {
+                editor.focus();
+                document.execCommand('styleWithCSS', false, true);
+                document.execCommand('justifyCenter', false, null);
+                updateAlignButtons('justifyCenter');
+                updatePreview();
+            });
+            document.getElementById('justifyRight')?.addEventListener('click', () => {
+                editor.focus();
+                document.execCommand('styleWithCSS', false, true);
+                document.execCommand('justifyRight', false, null);
+                updateAlignButtons('justifyRight');
+                updatePreview();
+            });
+            document.getElementById('justifyFull')?.addEventListener('click', () => {
+                editor.focus();
+                document.execCommand('styleWithCSS', false, true);
+                document.execCommand('justifyFull', false, null);
+                updateAlignButtons('justifyFull');
+                updatePreview();
+            });
+            
+            // リスト
+            document.getElementById('insertOrderedList')?.addEventListener('click', () => {
+                editor.focus();
+                document.execCommand('insertOrderedList', false, null);
+                updateButtonState('insertOrderedList');
+                updateButtonState('insertUnorderedList');
+                updatePreview();
+            });
+            document.getElementById('insertUnorderedList')?.addEventListener('click', () => {
+                editor.focus();
+                document.execCommand('insertUnorderedList', false, null);
+                updateButtonState('insertUnorderedList');
+                updateButtonState('insertOrderedList');
+                updatePreview();
+            });
+            document.getElementById('indent')?.addEventListener('click', () => {
+                editor.focus();
+                document.execCommand('indent', false, null);
+                updatePreview();
+            });
+            document.getElementById('outdent')?.addEventListener('click', () => {
+                editor.focus();
+                document.execCommand('outdent', false, null);
+                updatePreview();
+            });
+            
+            // 行間
+            document.getElementById('lineHeight')?.addEventListener('change', function() {
+                const lineHeight = this.value;
+                const selection = window.getSelection();
+                
+                if (selection.rangeCount > 0) {
+                    const range = selection.getRangeAt(0);
+                    
+                    if (!range.collapsed) {
+                        const contents = range.extractContents();
+                        const span = document.createElement('span');
+                        span.style.lineHeight = lineHeight;
+                        span.appendChild(contents);
+                        range.insertNode(span);
+                        
+                        range.selectNodeContents(span);
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                    } else {
+                        let element = range.startContainer;
+                        if (element.nodeType === 3) {
+                            element = element.parentNode;
+                        }
+                        
+                        while (element && element !== editor && !isBlockElement(element)) {
+                            element = element.parentNode;
+                        }
+                        
+                        if (element && element !== editor) {
+                            element.style.lineHeight = lineHeight;
+                        } else {
+                            editor.style.lineHeight = lineHeight;
+                        }
+                    }
+                }
+                updatePreview();
+            });
+            
+            // リンク
+            document.getElementById('createLink')?.addEventListener('click', () => {
+                const url = prompt('リンクURLを入力してください:');
+                if (url) {
+                    editor.focus();
+                    document.execCommand('createLink', false, url);
+                    updatePreview();
+                }
+            });
+            document.getElementById('unlink')?.addEventListener('click', () => {
+                editor.focus();
+                document.execCommand('unlink', false, null);
+                updatePreview();
+            });
+            
+            // 画像挿入
+            document.getElementById('insertImage')?.addEventListener('click', () => {
+                const url = prompt('画像URLを入力してください:');
+                if (url) {
+                    editor.focus();
+                    document.execCommand('insertImage', false, url);
+                    
+                    setTimeout(() => {
+                        const images = editor.querySelectorAll('img:not([style*="max-width"])');
+                        images.forEach(img => {
+                            img.style.maxWidth = '100%';
+                            img.style.height = 'auto';
+                        });
+                    }, 100);
+                    updatePreview();
+                }
+            });
+            
+            // テーブル
+            document.getElementById('insertTable')?.addEventListener('click', () => {
+                const rows = prompt('行数を入力してください:', '3');
+                const cols = prompt('列数を入力してください:', '3');
+                if (rows && cols) {
+                    insertTable(parseInt(rows), parseInt(cols));
+                    updatePreview();
+                }
+            });
+            
+            // 水平線
+            document.getElementById('insertHorizontalRule')?.addEventListener('click', () => {
+                editor.focus();
+                document.execCommand('insertHorizontalRule', false, null);
+                updatePreview();
+            });
+            
+            // 書式をクリア
+            document.getElementById('removeFormat')?.addEventListener('click', () => {
+                editor.focus();
+                document.execCommand('removeFormat', false, null);
+                document.execCommand('unlink', false, null);
+                updatePreview();
+            });
+            
+            // HTMLソース表示
+            let sourceMode = false;
+            document.getElementById('viewSource')?.addEventListener('click', () => {
+                sourceMode = !sourceMode;
+                if (sourceMode) {
+                    const content = editor.innerHTML;
+                    editor.innerHTML = '<textarea style="width:100%;height:400px;font-family:monospace;">' + 
+                        escapeHtml(content) + '</textarea>';
+                    document.getElementById('viewSource').classList.add('active');
+                } else {
+                    const textarea = editor.querySelector('textarea');
+                    if (textarea) {
+                        editor.innerHTML = textarea.value;
+                    }
+                    document.getElementById('viewSource').classList.remove('active');
+                }
+                updatePreview();
+            });
+            
+            // 基本ボタン
+            document.getElementById('saveBtn')?.addEventListener('click', () => {
+                const content = editor.innerHTML;
+                localStorage.setItem('richEditorContent', content);
+                alert('✅ 内容を保存しました！');
+            });
+            
+            document.getElementById('loadBtn')?.addEventListener('click', () => {
+                const content = localStorage.getItem('richEditorContent');
+                if (content) {
+                    editor.innerHTML = content;
+                    updatePreview();
+                    alert('📂 保存した内容を読み込みました！');
+                } else {
+                    alert('💭 保存された内容がありません。');
+                }
+            });
+            
+            document.getElementById('copyBtn')?.addEventListener('click', () => {
+                const content = editor.innerHTML;
+                navigator.clipboard.writeText(content).then(() => {
+                    alert('📋 HTMLをクリップボードにコピーしました！');
+                }).catch(() => {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = content;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    alert('📋 HTMLをクリップボードにコピーしました！');
+                });
+            });
+            
+            document.getElementById('clearAllBtn')?.addEventListener('click', () => {
+                if (confirm('全ての内容を削除しますか？')) {
+                    editor.innerHTML = 'ここに文章を入力してください。Google Docs風の高機能ツールバーをお試しください！';
+                    updatePreview();
+                }
+            });
+            
+            // キーボードショートカット
+            editor.addEventListener('keydown', function(e) {
+                if (e.ctrlKey) {
+                    switch(e.key) {
+                        case 'b':
+                            e.preventDefault();
+                            document.execCommand('bold', false, null);
+                            updatePreview();
+                            break;
+                        case 'i':
+                            e.preventDefault();
+                            document.execCommand('italic', false, null);
+                            updatePreview();
+                            break;
+                        case 'u':
+                            e.preventDefault();
+                            document.execCommand('underline', false, null);
+                            updatePreview();
+                            break;
+                        case 'z':
+                            if (e.shiftKey) {
+                                e.preventDefault();
+                                document.execCommand('redo', false, null);
+                            } else {
+                                e.preventDefault();
+                                document.execCommand('undo', false, null);
+                            }
+                            break;
+                        case 'y':
+                            e.preventDefault();
+                            document.execCommand('redo', false, null);
+                            break;
+                        case 'f':
+                            e.preventDefault();
+                            document.getElementById('searchInput')?.focus();
+                            break;
+                    }
+                } else if (e.key === 'F3') {
+                    e.preventDefault();
+                    findNext();
+                }
+            });
+            
+            // ツールバーボタンの状態更新
+            editor.addEventListener('keyup', updateToolbarStates);
+            editor.addEventListener('mouseup', updateToolbarStates);
+        }
+        
+        // 補助関数群
+        function updatePreview() {
+            if (preview && editor) {
+                preview.innerHTML = editor.innerHTML || 'プレビューがここに表示されます';
+            }
+        }
+        
+        function updateButtonState(command) {
+            const button = document.getElementById(command);
+            if (button) {
+                if (document.queryCommandState(command)) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            }
+        }
+        
+        function updateAlignButtons(activeAlign) {
+            const aligns = ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'];
+            aligns.forEach(align => {
+                const button = document.getElementById(align);
+                if (button) {
+                    if (align === activeAlign) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                }
+            });
+        }
+        
+        function updateToolbarStates() {
+            ['bold', 'italic', 'underline'].forEach(command => {
+                updateButtonState(command);
+            });
+            
+            updateButtonState('insertOrderedList');
+            updateButtonState('insertUnorderedList');
+            
+            const aligns = ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'];
+            let activeAlign = null;
+            
+            aligns.forEach(align => {
+                if (document.queryCommandState(align.replace('justify', '').toLowerCase())) {
+                    activeAlign = align;
+                }
+            });
+            
+            if (activeAlign) {
+                updateAlignButtons(activeAlign);
+            }
+        }
+        
+        function isBlockElement(element) {
+            const blockElements = ['DIV', 'P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'BLOCKQUOTE', 'PRE', 'LI'];
+            return blockElements.includes(element.tagName);
+        }
+        
+        function insertTable(rows, cols) {
+            let tableHTML = '<table border="1" style="border-collapse: collapse; width: 100%;">';
+            for (let i = 0; i < rows; i++) {
+                tableHTML += '<tr>';
+                for (let j = 0; j < cols; j++) {
+                    tableHTML += '<td style="padding: 8px; border: 1px solid #ccc;">セル</td>';
+                }
+                tableHTML += '</tr>';
+            }
+            tableHTML += '</table>';
+            
+            document.execCommand('insertHTML', false, tableHTML);
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // 検索機能
+        function performSearch() {
+            clearSearchHighlights();
+            if (!currentSearchTerm || currentSearchTerm.length < 1) return;
+            
+            const text = editor.textContent;
+            const regex = new RegExp(escapeRegex(currentSearchTerm), 'gi');
+            let match;
+            searchResults = [];
+            
+            while ((match = regex.exec(text)) !== null) {
+                searchResults.push({
+                    index: match.index,
+                    length: currentSearchTerm.length
+                });
+            }
+            
+            if (searchResults.length > 0) {
+                highlightSearchResults();
+                currentSearchIndex = 0;
+                scrollToSearchResult(0);
+                
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput) {
+                    searchInput.title = `${searchResults.length}件見つかりました`;
+                }
+            } else {
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput) {
+                    searchInput.title = '見つかりませんでした';
+                }
+            }
+        }
+        
+        function highlightSearchResults() {
+            const html = editor.innerHTML;
+            const regex = new RegExp('(' + escapeRegex(currentSearchTerm) + ')', 'gi');
+            const highlightedHtml = html.replace(regex, '<mark class="search-highlight">$1</mark>');
+            editor.innerHTML = highlightedHtml;
+        }
+        
+        function clearSearchHighlights() {
+            const highlights = editor.querySelectorAll('.search-highlight');
+            highlights.forEach(highlight => {
+                const parent = highlight.parentNode;
+                parent.replaceChild(document.createTextNode(highlight.textContent), highlight);
+                parent.normalize();
+            });
+        }
+        
+        function findNext() {
+            if (searchResults.length === 0) {
+                performSearch();
+                return;
+            }
+            
+            currentSearchIndex = (currentSearchIndex + 1) % searchResults.length;
+            scrollToSearchResult(currentSearchIndex);
+        }
+        
+        function scrollToSearchResult(index) {
+            const highlights = document.querySelectorAll('.search-highlight');
+            if (highlights[index]) {
+                highlights.forEach(h => h.classList.remove('search-active'));
+                highlights[index].classList.add('search-active');
+                highlights[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+        
+        function performReplace() {
+            const replaceText = prompt('置換後の文字列を入力してください:', currentSearchTerm);
+            if (replaceText !== null) {
+                const regex = new RegExp(escapeRegex(currentSearchTerm), 'gi');
+                editor.innerHTML = editor.innerHTML.replace(regex, replaceText);
+                clearSearchHighlights();
+                currentSearchTerm = '';
+                document.getElementById('searchInput').value = '';
+                updatePreview();
+            }
+        }
+        
+        function escapeRegex(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+        
+        // 色ボタンの表示を更新する関数
+        function updateColorButton(button, color, type) {
+            button.style.setProperty('--current-color', color);
+            
+            if (type === 'text') {
+                button.style.background = `linear-gradient(to bottom, ${color} 70%, #ffffff 70%)`;
+                const brightness = getBrightness(color);
+                button.style.color = brightness > 128 ? '#000000' : '#ffffff';
+                button.style.textShadow = brightness > 128 ? '1px 1px 1px rgba(0,0,0,0.3)' : '1px 1px 1px rgba(255,255,255,0.3)';
+            } else if (type === 'background') {
+                button.style.background = color;
+                const brightness = getBrightness(color);
+                button.style.color = brightness > 128 ? '#000000' : '#ffffff';
+                button.style.textShadow = brightness > 128 ? '1px 1px 1px rgba(0,0,0,0.3)' : '1px 1px 1px rgba(255,255,255,0.3)';
+            }
+        }
+        
+        // 色の明度を計算する関数
+        function getBrightness(hexColor) {
+            const hex = hexColor.replace('#', '');
+            const r = parseInt(hex.substr(0, 2), 16);
+            const g = parseInt(hex.substr(2, 2), 16);
+            const b = parseInt(hex.substr(4, 2), 16);
+            return (r * 299 + g * 587 + b * 114) / 1000;
+        }
+        
+        // ページ完全読み込み後にも再度スタイル適用
+        window.addEventListener('load', function() {
+            setTimeout(forceCompactStyles, 500);
+        });
+    </script>
+</body>
+</html>

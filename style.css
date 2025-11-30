@@ -1,0 +1,116 @@
+    /* ======================================= */
+    /* 1. メニュー開閉ボタンと全体コンテナのスタイル */
+    /* ======================================= */
+    .menu-container {
+        margin: 20px 0; /* 上下の余白 */
+    }
+
+    /* メニュー開閉ボタンのスタイル */
+    .menu-toggle-button {
+        padding: 10px 15px;
+        background-color: #0073aa; /* WordPressの標準的な青 */
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 4px;
+        font-weight: bold;
+        display: block; /* ブロック要素にして幅を広げやすくする */
+        width: 100%; /* 親要素いっぱいに広げる場合 */
+        text-align: left;
+    }
+    .menu-toggle-button:hover {
+        background-color: #005177;
+    }
+
+    /* メニューラッパー（開閉対象の領域） */
+    .corporate-info-menu-wrapper {
+        border: 1px solid #ccc;
+        background-color: #f9f9f9;
+        padding: 10px 0; /* 内側の上下の余白 */
+    }
+
+    /* ======================================= */
+    /* 2. 階層メニューリストのスタイル */
+    /* ======================================= */
+    .corporate-info-menu {
+        /* ナビゲーション全体のスタイル調整 */
+    }
+
+    /* すべての ul 要素のデフォルトスタイルをリセット */
+    .corporate-info-menu ul {
+        list-style: none; /* マーカーを非表示 */
+        margin: 0;
+        padding-left: 15px; /* 子要素のインデント */
+    }
+    /* 最上位の ul 要素のみインデントをなくす */
+    .corporate-info-menu > .menu-level-xx {
+        padding-left: 0; 
+    }
+
+    /* 最上位のカテゴリータイトル */
+    .menu-category-title {
+        font-size: 1.1em;
+        font-weight: bold;
+        color: #005177;
+        padding: 5px 10px;
+        margin: 10px 0 5px 0;
+        border-bottom: 2px solid #ddd;
+    }
+
+    /* xxレベル (第1階層) */
+    .menu-level-xx > li {
+        margin-top: 5px;
+    }
+    .menu-title-xx {
+        font-weight: bold;
+        display: block;
+        padding: 3px 10px;
+        color: #333;
+        cursor: pointer; /* クリック可能であることを示す */
+        position: relative;
+        background-color: #eee;
+    }
+
+    /* yyレベル (第2階層) */
+    .menu-level-yy > li {
+        margin-top: 2px;
+    }
+    .menu-title-yy {
+        font-weight: 500;
+        display: block;
+        padding: 3px 10px;
+        color: #555;
+        font-size: 0.95em;
+        cursor: pointer;
+        position: relative;
+    }
+
+    /* クリック可能なタイトルにホバーエフェクトを追加 */
+    .clickable-title:hover {
+        background-color: #e0e0e0;
+    }
+
+    /* トグルアイコンのスタイル */
+    .toggle-icon {
+        position: absolute;
+        right: 10px;
+        font-size: 1.2em;
+        line-height: 1;
+    }
+
+    /* zzレベル (最終層/記事リンク) */
+    .menu-level-zz li a {
+        display: block;
+        padding: 2px 10px;
+        text-decoration: none;
+        color: #0073aa;
+        font-size: 0.9em;
+        transition: background-color 0.2s;
+    }
+    .menu-level-zz li a:hover {
+        text-decoration: underline;
+        background-color: #e6f7ff;
+    }
+ 
+    

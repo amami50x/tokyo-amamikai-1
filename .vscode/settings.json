@@ -1,0 +1,6 @@
+{
+    "php.validate.enable": false,
+    "intelephense.diagnostics.undefinedFunctions": false,
+    "intelephense.diagnostics.undefinedTypes": false,
+    "intelephense.diagnostics.undefinedConstants": false
+}

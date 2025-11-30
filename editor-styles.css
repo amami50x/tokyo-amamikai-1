@@ -1,0 +1,36 @@
+
+/* WordPressエディタ用カスタムCSSのみ記述してください */
+.wp-editor-container .mce-content-body {
+  -webkit-user-modify: read-write !important;
+  -moz-user-modify: read-write !important;
+}
+
+/* プレビュー用の基本スタイル */
+.mce-content-body {
+    font-family: "メイリオ", Meiryo, sans-serif;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+/* エディタツールバーのスタイル調整 */
+.mce-tinymce {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+}
+
+.has-text-align-center {
+  text-align: center;
+}
+.has-background {
+  background-color: #f0f0f0;
+  padding: 1em;
+}
+.has-text-color {
+  color: inherit;
+}
+.has-text-align-right {
+  text-align: right;
+}
+.has-text-align-left {
+  text-align: left;
+}
