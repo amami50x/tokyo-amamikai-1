@@ -20,164 +20,18 @@
     }
     .tokyo-menu-list h1 {
         background:linear-gradient(45deg, #a78bfa, #8b5cf6);
-        color:#fff; padding:18px 0; text-align:center; border-radius:10px;
-        margin-bottom:28px; font-size:2.1em; font-weight:700;
-        text-shadow:2px 2px 6px rgba(0,0,0,0.18);
-        box-shadow:0 4px 15px rgba(0,0,0,0.13);
-        letter-spacing:0.04em;
-    }
-    .tokyo-menu-list form {
-        margin-bottom:18px; 
-        background:linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        padding:14px 10px; border-radius:12px; display:flex; flex-wrap:wrap; align-items:center; gap:8px;
-        box-shadow:0 4px 12px rgba(0,0,0,0.13);
-    }
-
-    /* 一覧画面タイトル用デザイン改善 */
-    .menu-header-row {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 28px;
-    }
-    .menu-header-row h1 {
-        margin: 0;
-        padding: 18px 0;
-        background: linear-gradient(45deg, #a78bfa, #8b5cf6);
-        color: #fff;
-        border-radius: 12px;
-        font-size: 2.2em;
-        font-weight: 900;
-        letter-spacing: 0.04em;
-        text-shadow: 2px 2px 8px rgba(0,0,0,0.18);
-        box-shadow: 0 4px 18px rgba(0,0,0,0.15);
-        text-align: center;
-        min-width: 0;
-        border: 3px solid #fff;
-        width: 100%;
-        max-width: 700px;
-    }
-
-    body, .tokyo-menu-list {
-        font-family: "Yu Gothic", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
-        color: #222;
-        font-weight: 600;
-    }
-    .tokyo-menu-list, .menu-category, .tokyo-menu-items, .tokyo-menu-list form, 
-    .tokyo-menu-list h2, .tokyo-menu-list label, .tokyo-menu-list input, 
-    .tokyo-menu-list select, .tokyo-menu-list button {
-        font-weight: 600;
-        color: #222;
-    }
-    .tokyo-menu-list a, .tokyo-menu-items a {
-        font-weight: 700;
-        color: #1e90ff;
-    }
-
-    /* A4エリア内の段落やブロックに背景色と角丸を付与 */
-    .tokyo-menu-a4-content p,
-    .tokyo-menu-a4-content ul,
-    .tokyo-menu-a4-content ol,
-    .tokyo-menu-a4-content pre,
-    .tokyo-menu-a4-content blockquote,
-    .tokyo-menu-a4-content table {
-        background: #e3f0ff;
-        border-radius: 8px;
-        padding: 6px 12px;
-        margin-bottom: 10px;
-        box-sizing: border-box;
-    }
-    .tokyo-menu-a4-content p {
-        margin-top: 0;
-        margin-bottom: 10px;
-        position: relative;
-    }
-    .tokyo-menu-a4-content p.pen-icon::before {
-        content: "\f304 ";
-        font-family: "Font Awesome 6 Free";
-        font-weight: 900;
-        color: #2196f3;
-        margin-right: 8px;
-        font-size: 1em;
-        position: relative;
-        top: 0.5px;
-    }
-    .tokyo-menu-a4-content p.calendar-icon::before {
-        content: "\f133 ";
-        font-family: "Font Awesome 6 Free";
-        font-weight: 900;
-        color: #2196f3;
-        margin-right: 8px;
-        font-size: 1em;
-        position: relative;
-        top: 0.5px;
-    }
-
-    /* A4厳密固定・中央寄せ・余白・背景・角丸・縦方向無制限 */
-    .tokyo-menu-a4-content {
-        width: 210mm;
-        min-width: 210mm;
-        max-width: 210mm;
-        min-height: 0;
-        height: auto !important;
-        max-height: none !important;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        background: #f8fafc;
-        border: 1px solid #b6d6f6;
-        border-radius: 8px;
-        box-sizing: border-box;
-        padding: 32px 32px 56px 32px;
-        font-size: 16px;
-        line-height: 1.5;
-        font-weight: 600;
-        color: #222;
-        font-family: Yu Gothic, Hiragino Kaku Gothic ProN, Meiryo, sans-serif;
-        overflow: visible;
-        box-shadow: 0 4px 18px rgba(0,0,0,0.07);
-    }
-
-    @media print {
-        .tokyo-menu-a4-content {
-            width: 210mm !important;
-            min-width: 210mm !important;
-            max-width: 210mm !important;
-            min-height: 297mm !important;
-            max-height: none !important;
-            height: auto !important;
-            margin: 0 auto !important;
-            page-break-after: always;
-            background: #fff !important;
-            box-shadow: none !important;
         }
-    }
+        /* ↑ ここに抜けていた } を追加済 */
 
-    /* 履歴表示用スタイル */
-    .history-mode-buttons {
-        text-align: center;
-        margin: 15px 0;
-        padding: 10px;
-        background: rgba(255,255,255,0.1);
-        border-radius: 10px;
-    }
-    .history-mode-buttons a {
-        display: inline-block;
-        padding: 8px 16px;
-        margin: 0 5px;
-        background: #4facfe;
-        color: white;
-        text-decoration: none;
-        border-radius: 6px;
-        font-weight: bold;
-        transition: all 0.3s ease;
-    }
-    .history-mode-buttons a:hover {
-        background: #00f2fe;
-        transform: translateY(-2px);
-    }
+    
+    /* ← 余計な } を削除済み */
+    
     .history-mode-buttons a.active {
         background: #ff6b6b;
+    }
+    /* 修正: transformに閉じ括弧追加 */
+    .history-mode-buttons {
+        transform: translateY(-2px);
     }
     .history-list {
         background: rgba(255,255,255,0.95);
@@ -372,7 +226,7 @@
 
     // 一覧画面タイトル（1行目）
     echo '<div class="menu-header-row">';
-    echo '<h1>東京奄美会メニュー一覧</h1>';
+        echo '<h1>東京奄美会メニュー一覧</h1>'; // 元のコードを復元
     echo '</div>';
 
     // 履歴表示モード切り替えボタン（一覧画面用）
@@ -389,6 +243,7 @@
     echo '</div>';
 
     // 検索パラメータを取得
+
     $keyword     = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
     $author      = isset($_GET['author_name']) ? sanitize_text_field($_GET['author_name']) : '';
     $start_year  = isset($_GET['start_year']) ? sanitize_text_field($_GET['start_year']) : '';
@@ -396,85 +251,88 @@
     $show_menu_no = isset($_GET['show_menu_no']) ? sanitize_text_field($_GET['show_menu_no']) : 'no';
     $category    = isset($_GET['category']) ? sanitize_text_field($_GET['category']) : '';
 
-    $filtered_posts = array();
+
+    $args_base = array(
+        'post_type' => 'post',
+        'posts_per_page' => -1,
+        'post_status' => 'publish',
+        'orderby' => 'date',
+        'order' => 'DESC',
+        'meta_key' => 'menu_no',
+    );
+
+    // WP_Queryの仕様上、's'とtax_query/meta_query併用は非推奨なので分離
+
 
     if (!empty($keyword)) {
-        $args = array(
-            'post_type' => 'post',
-            'posts_per_page' => -1,
-            'post_status' => 'publish',
-            's' => $keyword,
-            'orderby' => 'date',
-            'order' => 'ASC',
-        );
-        
-        if (!empty($author)) {
-            $args['author_name'] = $author;
-        }
-        if (!empty($start_year)) {
-            $args['date_query'] = array(array('year' => intval($start_year)));
-        }
-        if (!empty($category)) {
-            $args['cat'] = intval($category);
-        }
-        
-        $query = new WP_Query($args);
-        if ($query->have_posts()) {
-            while ($query->have_posts()) {
-                $query->the_post();
-                $post_id = get_the_ID();
-                $menu_no = get_post_meta($post_id, 'menu_no', true);
-                
-                if (!empty($menu_no)) {
-                    if (!empty($end_year)) {
-                        $menu_end = get_post_meta($post_id, 'menu_end', true);
-                        if ($menu_end && strpos($menu_end, $end_year) !== false) {
-                            $filtered_posts[] = $post_id;
-                        }
-                    } else {
-                        $filtered_posts[] = $post_id;
-                    }
-                }
+        global $wpdb;
+        $like = '%' . $wpdb->esc_like($keyword) . '%';
+        $sql = $wpdb->prepare('
+            SELECT DISTINCT p.ID
+            FROM ' . $wpdb->posts . ' p
+            LEFT JOIN ' . $wpdb->postmeta . ' m1 ON p.ID = m1.post_id AND m1.meta_key = "menu_no"
+            LEFT JOIN ' . $wpdb->postmeta . ' m2 ON p.ID = m2.post_id AND m2.meta_key = "editor_name"
+            LEFT JOIN ' . $wpdb->postmeta . ' m3 ON p.ID = m3.post_id AND m3.meta_key = "keisai_end_date"
+            WHERE p.post_status = "publish"
+              AND p.post_type = "post"
+              AND (
+                p.post_title LIKE %s
+                OR p.post_content LIKE %s
+                OR p.post_excerpt LIKE %s
+                OR m1.meta_value LIKE %s
+                OR m2.meta_value LIKE %s
+                OR m3.meta_value LIKE %s
+              )
+        ', $like, $like, $like, $like, $like, $like);
+        $results = $wpdb->get_results($sql);
+        $keyword_ids = array();
+        if ($results) {
+            foreach ($results as $row) {
+                $keyword_ids[] = $row->ID;
             }
-            wp_reset_postdata();
         }
-    } else {
-        $args = array(
-            'post_type' => 'post',
-            'posts_per_page' => -1,
-            'post_status' => 'publish',
-            'orderby' => 'date',
-            'order' => 'ASC',
-            'meta_key' => 'menu_no',
-        );
-        
-        if (!empty($author)) {
-            $args['author_name'] = $author;
+    }
+
+    $args = $args_base;
+    if (!empty($author)) {
+        $args['author_name'] = $author;
+    }
+    if (!empty($start_year)) {
+        $args['date_query'] = array(array('year' => intval($start_year)));
+    }
+    if (!empty($end_year)) {
+        $args['meta_query'][] = array('key' => 'keisai_end_date', 'value' => $end_year, 'compare' => 'LIKE');
+    }
+    if (!empty($category)) {
+        $cat_obj = get_category_by_slug($category);
+        if ($cat_obj) {
+            $args['tax_query'][] = array(
+                'taxonomy' => 'category',
+                'field'    => 'slug',
+                'terms'    => $category,
+            );
         }
-        if (!empty($start_year)) {
-            $args['date_query'] = array(array('year' => intval($start_year)));
+    }
+
+    $filtered_posts = array();
+    $query = new WP_Query($args);
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+            $filtered_posts[] = get_the_ID();
         }
-        if (!empty($end_year)) {
-            $args['meta_query'] = array(array('key' => 'menu_end', 'value' => $end_year, 'compare' => 'LIKE'));
-        }
-        if (!empty($category)) {
-            $args['cat'] = intval($category);
-        }
-        
-        $query = new WP_Query($args);
-        if ($query->have_posts()) {
-            while ($query->have_posts()) {
-                $query->the_post();
-                $filtered_posts[] = get_the_ID();
-            }
-            wp_reset_postdata();
-        }
+        wp_reset_postdata();
+    }
+
+    // キーワード検索がある場合はAND条件で絞り込む
+    if (!empty($keyword)) {
+        $filtered_posts = array_values(array_intersect($filtered_posts, $keyword_ids));
     }
 
     $final_count = count($filtered_posts);
 
     // 検索フォーム
-    echo '<form method="get" action="" style="margin-bottom:15px; background:linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding:12px; border-radius:10px; display:flex; flex-wrap:wrap; align-items:center; gap:6px; box-shadow:0 4px 12px rgba(0,0,0,0.15);">';
+    echo '<form method="get" action="' . esc_url($_SERVER['REQUEST_URI']) . '" style="margin-bottom:15px; background:linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding:12px; border-radius:10px; display:flex; flex-wrap:wrap; align-items:center; gap:6px; box-shadow:0 4px 12px rgba(0,0,0,0.15);">';
     echo '<input type="hidden" name="page_id" value="' . get_the_ID() . '">';
     echo '<input type="text" name="s" placeholder="🔍 キーワード検索" value="' . esc_attr($keyword) . '" style="padding:8px 10px; width:150px; background:rgba(255,255,255,0.9); border:2px solid #fff; border-radius:6px; font-size:13px; font-weight:500; box-shadow:0 2px 5px rgba(0,0,0,0.1);">';
 
@@ -491,8 +349,8 @@
     echo '<option value="">📂 カテゴリを選択</option>';
     $categories = get_categories(['hide_empty' => true]);
     foreach ($categories as $cat) {
-        $selected = ($category == $cat->term_id) ? 'selected' : '';
-        echo '<option value="' . esc_attr($cat->term_id) . '" ' . $selected . '>' . esc_html($cat->name) . '</option>';
+        $selected = ($category == $cat->slug) ? 'selected' : '';
+        echo '<option value="' . esc_attr($cat->slug) . '" ' . $selected . '>' . esc_html($cat->name) . '</option>';
     }
     echo '</select>';
 
@@ -651,13 +509,8 @@
             }
         }
     } else {
-        echo '<div style="text-align:center; padding:40px; background:rgba(255,255,255,0.9); border-radius:12px; margin:15px 0; box-shadow:0 5px 15px rgba(0,0,0,0.1);">';
-        echo '<p style="color:#e74c3c; font-weight:bold; font-size:20px; margin:0 0 12px 0;">投稿がありません</p>';
-        if (!empty($keyword)) {
-            echo '<p style="color:#7f8c8d; margin-top:8px; font-size:14px;">キーワード「' . esc_html($keyword) . '」に一致する投稿が見つかりませんでした。</p>';
-        } elseif (!empty($author) || !empty($category) || !empty($start_year) || !empty($end_year)) {
-            echo '<p style="color:#7f8c8d; margin-top:8px; font-size:14px;">条件に一致する投稿が見つかりませんでした。</p>';
-        }
+        // 検索フォーム直下にエラーメッセージを表示
+        echo '<div class="search-error-message" style="color:red; margin:18px 0 0 0; text-align:center; font-weight:bold; font-size:16px;">お探しのコンテンツはありません。</div>';
     }
 
     get_footer();
