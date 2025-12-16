@@ -79,6 +79,7 @@ Template Name: 奄美トップ
           <option value="">奄美関連サイト</option>
           <option value="https://violetfoal2.sakura.ne.jp/hp-amami-pr-1/amami.html">奄美PRサイト</option>
         </select>
+        <a href="http://localhost:10016/%e3%81%8a%e5%95%8f%e3%81%84%e5%90%88%e3%82%8f%e3%81%9b/" style="display:block;padding:10px 36px;background:#4facfe;color:#fff;font-size:1.1em;font-weight:900;border-radius:12px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,0.13);transition:background 0.3s;white-space:nowrap;">お問い合わせ</a>
       </div>
       <!-- 地図・説明 -->
       <div style="background:#fff;border-radius:18px;padding:36px 32px;box-shadow:0 2px 12px rgba(0,0,0,0.10);text-align:center;">
